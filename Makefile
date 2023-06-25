@@ -12,5 +12,6 @@ docker-run-bash:
 	sudo docker run -it --rm \
 	--hostname $(HOST_NAME) \
 	-v $(PWD):/home/$(HOST_NAME) \
+	--privileged \
 	-w /home/$(HOST_NAME) \
 	$(DOCKER_IMAGE)
