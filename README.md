@@ -17,14 +17,19 @@ Now in side the docker, we do following to have our kernel build and run in the 
 env:
 ```
 apt update
-apt-get install libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf bc llvm cpio qemu-system-x86 -y
+apt-get install libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf bc llvm cpio qemu-system-x86 xz-utils -y
+
+// for arm64:
+apt-get install libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf bc llvm cpio qemu-system-aarch64 xz-utils -y
 ```
 
 ## Build Kernel
 Config the kernel: Let's generate the `.config` file for the default x86_64 architecture.
 ```
 cd  linux-6.3.8
-make ARCH=x86_64 defconfig
+make ARCH=x86_64 defconfig 
+// use arm
+make ARCH=arm64 defconfig 
 ```
 You can checkout `make help` for more features. 
 
@@ -64,6 +69,16 @@ qemu-system-x86_64 \
 
 `-append`: The qemu why to add the linux kernel argument. You can find more info about this [linux kernel parameters](https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt).
 
+ARM:
+```
+qemu-system-aarch64 \
+-M virt \
+-cpu cortex-a53 \
+--nographic \
+-kernel ./linux-4.19.287/arch/arm64/boot/Image \
+-initrd simple_init/root.cpio.gz \
+-append "panic=1"
+```
 
 Now you should see below as the kernel successfully booted.
 ```
