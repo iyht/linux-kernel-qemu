@@ -1,0 +1,5 @@
+**/init
+**/*cpio.gz
+linux*/
+busybox*/
+buildroot/
