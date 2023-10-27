@@ -1,5 +1,8 @@
 
 ## Run Linux Kernel with Custom init binary
+### Download the Linux Kernel source code
+Download the linux source code from https://www.kernel.org/ and store it in `mkdir linux`.
+
 ### Docker
 Create docker image to run the qemu:
 ```
@@ -27,7 +30,7 @@ apt-get install libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-de
 ### Build Kernel
 Config the kernel: Let's generate the `.config` file for the default x86_64 architecture.
 ```
-cd  linux-6.3.8
+cd  linux
 make ARCH=x86_64 defconfig 
 // use arm
 make ARCH=arm64 defconfig 
@@ -56,7 +59,7 @@ find . | cpio -o -H newc | gzip > root.cpio.gz
 qemu-system-x86_64 \
 --nographic \
 -no-reboot \
--kernel ./linux-6.3.8/arch/x86/boot/bzImage \
+-kernel ./linux/arch/x86/boot/bzImage \
 -initrd simple_init/root.cpio.gz \
 -append "panic=1 console=ttyS0"
 ```
@@ -76,7 +79,7 @@ qemu-system-aarch64 \
 -M virt \
 -cpu cortex-a53 \
 --nographic \
--kernel ./linux-4.19.287/arch/arm64/boot/Image \
+-kernel ./linux/arch/arm64/boot/Image \
 -initrd simple_init/root.cpio.gz \
 -append "panic=1"
 ```
@@ -101,10 +104,10 @@ hello kernel!!!!
 ```
 
 ## Run Linux Kernel with Bash
-Get the BusyBox from: https://busybox.net/ in the `busybox-1.36.1` directory.
+Get the BusyBox from: https://busybox.net/ in the `busybox` directory.
 
 Build the busybox
-- `cd busybox-1.36.1`
+- `cd busybox`
 - Configure the Busybox with the default config `make defconfig`.
 - Manually config the `.config` file and set `CONFIG_STATIC=y` so that the binary is statically linked.
 - `make -j $(nproc) && make install`, you will find the installed folder in `_install`
@@ -137,8 +140,8 @@ setsid sh -c 'exec sh </dev/ttyS0 > /dev/ttyS0 2>&1'
 qemu-system-x86_64 \
 --nographic \
 -no-reboot \
--kernel ./linux-6.3.8/arch/x86/boot/bzImage \
--initrd busybox-1.36.1/initrd/root.cpio.gz \
+-kernel ./linux/arch/x86/boot/bzImage \
+-initrd busybox/initrd/root.cpio.gz \
 -append "panic=1 console=ttyS0"
 ```
 - We should see the following that we have the bash after booting the Linux Kernel:
